@@ -16,4 +16,12 @@ public class AccountService {
         }
         accountRepository.save(new Account(username, password));
     }
+
+    public boolean login(String username, String password) {
+        if (accountRepository.findByUsername(username).isPresent()) {
+            final String passwordRepository = accountRepository.findByUsername(username).get().getPassword();
+            return passwordRepository.equals(password);
+        }
+        return false;
+    }
 }

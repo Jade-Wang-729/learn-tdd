@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -34,5 +35,15 @@ class AccountServiceTest extends BaseUnitTest {
 
         // when
         assertThrows(RuntimeException.class, () -> accountService.register(USERNAME, PASSWORD), "用户名已使用");
+    }
+
+    @Test
+    void should_login_success_when_login_given_an_exist_username_and_right_password() {
+        // given
+        given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(new Account(USERNAME, "123")));
+//        given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(new Account(USERNAME,PASSWORD)));
+
+        // when
+        assertTrue(accountService.login(USERNAME, "123"));
     }
 }
