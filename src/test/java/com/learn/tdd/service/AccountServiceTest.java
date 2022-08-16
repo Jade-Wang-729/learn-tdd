@@ -9,6 +9,7 @@ import org.mockito.Mock;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -44,6 +45,6 @@ class AccountServiceTest extends BaseUnitTest {
 //        given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(new Account(USERNAME,PASSWORD)));
 
         // when
-        assertTrue(accountService.login(USERNAME, "123"));
+        assertThat(accountService.login(USERNAME, "123")).isEqualTo(accountService.SUCCESS);
     }
 }

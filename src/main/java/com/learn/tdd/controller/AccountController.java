@@ -1,6 +1,7 @@
 package com.learn.tdd.controller;
 
 import com.learn.tdd.controller.request.AccountRequest;
+import com.learn.tdd.controller.request.PasswordChangeRequest;
 import com.learn.tdd.controller.request.PasswordValidateRequest;
 import com.learn.tdd.service.AccountService;
 import com.learn.tdd.service.PasswordValidateService;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -26,6 +26,16 @@ public class AccountController {
     @PostMapping("/register")
     public void register(@RequestBody @Valid AccountRequest account) {
         accountService.register(account.getUsername(), account.getPassword());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @Valid AccountRequest account) {
+        String message =  accountService.login(account.getUsername(), account.getPassword());
+
+        if (message.equals(accountService.SUCCESS)) {
+            return ResponseEntity.ok(accountService.SUCCESS);
+        }
+        return ResponseEntity.badRequest().body(message);
     }
 
     /**

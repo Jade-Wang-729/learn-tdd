@@ -3,21 +3,30 @@ package com.learn.tdd.controller;
 import com.learn.tdd.BaseApiTest;
 import com.learn.tdd.controller.request.AccountRequest;
 import com.learn.tdd.controller.request.PasswordValidateRequest;
+import com.learn.tdd.entity.Account;
+import com.learn.tdd.repository.AccountRepository;
+import com.learn.tdd.service.AccountService;
 import com.learn.tdd.service.PasswordValidateService;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
 public class AccountControllerTest extends BaseApiTest {
     private static final String REGISTER_URL = "/accounts/register";
     private static final String PASSWORD_VALIDATE_URL = "/accounts/password/validate";
 
+    //register
     @Test
     void should_register_success_when_register_given_valid_username_and_valid_password() {
         // given
@@ -31,6 +40,7 @@ public class AccountControllerTest extends BaseApiTest {
         // then
         dbAssertThat("select * from accounts where username = ?", request.getUsername()).hasNumberOfRows(1);
     }
+
 
     @Test
     @Sql("classpath:sql/insertUserToDb.sql")
@@ -214,5 +224,42 @@ public class AccountControllerTest extends BaseApiTest {
                 .then().status(HttpStatus.BAD_REQUEST).extract().asString();
 
         assertThat(result).isEqualTo("连续相同字符不能超过两个");
+    }
+
+    //login
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_login_success_when_login_given_valid_username_and_valid_password() {
+        // given
+        AccountRequest request = new AccountRequest();
+        request.setUsername("TestUser");
+        request.setPassword("password");
+
+        given().body(request).post("/accounts/login").then().status(HttpStatus.OK);
+    }
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_login_fail_when_login_given_valid_username_and_wrong_password() {
+        // given
+        AccountRequest request = new AccountRequest();
+        request.setUsername("TestUser");
+        request.setPassword("password0012dfbfdbdf");
+
+        given().body(request).post("/accounts/login").then().status(HttpStatus.BAD_REQUEST).body(equalTo("用户名或密码错误"));
+        // when
+        // then
+    }
+
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_login_fail_when_login_given_unvalid_username_and_password() {
+        // given
+        AccountRequest request = new AccountRequest();
+        request.setUsername("TestUserWrong");
+        request.setPassword("password");
+
+        given().body(request).post("/accounts/login").then().status(HttpStatus.BAD_REQUEST).body(equalTo("用户名或密码错误"));
+        // when
+        // then
     }
 }

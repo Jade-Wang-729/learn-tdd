@@ -5,10 +5,13 @@ import com.learn.tdd.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
+    public final String SUCCESS = "SUCCESS";
 
     public void register(String username, String password) {
         if (accountRepository.findByUsername(username).isPresent()) {
@@ -17,11 +20,17 @@ public class AccountService {
         accountRepository.save(new Account(username, password));
     }
 
-    public boolean login(String username, String password) {
-        if (accountRepository.findByUsername(username).isPresent()) {
-            final String passwordRepository = accountRepository.findByUsername(username).get().getPassword();
-            return passwordRepository.equals(password);
+    public String login(String username, String password) {
+
+        if (accountRepository.findByUsername(username).isEmpty()) {
+            return "用户名或密码错误";
         }
-        return false;
+        final String passwordRepository = accountRepository.findByUsername(username).get().getPassword();
+
+        if (!passwordRepository.equals(password)) {
+            return "用户名或密码错误";
+        }
+        return SUCCESS;
     }
+
 }
