@@ -1,3 +1,9 @@
 spring:
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3307/tddmysql?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
