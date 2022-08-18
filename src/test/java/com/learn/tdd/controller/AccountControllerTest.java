@@ -252,7 +252,7 @@ public class AccountControllerTest extends BaseApiTest {
 
     @Test
     @Sql("classpath:sql/insertUserToDb.sql")
-    void should_login_fail_when_login_given_unvalid_username_and_password() {
+    void should_login_fail_when_login_given_invalid_username_and_password() {
         // given
         AccountRequest request = new AccountRequest();
         request.setUsername("TestUserWrong");
