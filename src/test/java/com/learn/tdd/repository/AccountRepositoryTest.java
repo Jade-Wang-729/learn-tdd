@@ -48,4 +48,21 @@ class AccountRepositoryTest extends BaseRepositoryTest {
         assertThat(account.isPresent()).isTrue();
         assertThat(account.get().getPassword()).isEqualTo("password");
     }
+
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_update_account_when_change_password_given_exist_username_and_its_password_and_password() {
+        // when
+        Optional<Account> account = accountRepository.findByUsername("TestUser");
+        assertThat(account.isPresent()).isTrue();
+        assertThat(account.get().getPassword()).isEqualTo("password");
+
+        Optional<Account> userChange = accountRepository.findByUsername("TestUser");
+        if (userChange.isPresent()) {
+        userChange.get().setPassword("newPassword");
+        accountRepository.save(userChange.get());
+        }
+        Optional<Account> accountChange = accountRepository.findByUsername("TestUser");
+        accountChange.ifPresent(value -> assertThat(value.getPassword()).isEqualTo("newPassword"));
+    }
 }
