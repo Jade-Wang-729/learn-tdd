@@ -4,24 +4,16 @@ import com.learn.tdd.BaseApiTest;
 import com.learn.tdd.controller.request.AccountRequest;
 import com.learn.tdd.controller.request.PasswordChangeRequest;
 import com.learn.tdd.controller.request.PasswordValidateRequest;
-import com.learn.tdd.entity.Account;
-import com.learn.tdd.repository.AccountRepository;
-import com.learn.tdd.service.AccountService;
 import com.learn.tdd.service.PasswordValidateService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 
 public class AccountControllerTest extends BaseApiTest {
     private static final String REGISTER_URL = "/accounts/register";
@@ -274,5 +266,29 @@ public class AccountControllerTest extends BaseApiTest {
         request.setRepeatPassword("newPassword");
 
         given().body(request).post("/accounts/changePassword").then().status(HttpStatus.OK);
+    }
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_update_fail_when_change_password_given_wrong_username_or_password_and_same_password() {
+        // given
+        PasswordChangeRequest request = new PasswordChangeRequest();
+        request.setUsername("TestUserWrong");
+        request.setPassword("password");
+        request.setNewPassword("newPassword");
+        request.setRepeatPassword("newPassword");
+
+        given().body(request).post("/accounts/changePassword").then().status(HttpStatus.BAD_REQUEST).body(equalTo("用户名或密码错误"));
+    }
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_update_fail_when_change_password_given_valid_username_and_password_and_different_password() {
+        // given
+        PasswordChangeRequest request = new PasswordChangeRequest();
+        request.setUsername("TestUser");
+        request.setPassword("password");
+        request.setNewPassword("newPassword");
+        request.setRepeatPassword("differentPassword");
+
+        given().body(request).post("/accounts/changePassword").then().status(HttpStatus.BAD_REQUEST).body(equalTo("密码不一致"));
     }
 }
