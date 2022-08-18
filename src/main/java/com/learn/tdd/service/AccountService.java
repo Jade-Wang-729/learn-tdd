@@ -47,10 +47,10 @@ public class AccountService {
         Account userChange = accountRepository.findByUsername(username).get();
         userChange.setPassword(newPassword);
 
-        final Account saveAccount = accountRepository.save(userChange);
-        if (!saveAccount.getPassword().equals(newPassword)) {
-            return "保存失败";
-        }
+        accountRepository.save(userChange);
+//        if (!saveAccount.getPassword().equals(newPassword)) {
+//            return "保存失败";
+//        }
 
         return SUCCESS;
 
