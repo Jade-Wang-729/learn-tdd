@@ -2,6 +2,7 @@ package com.learn.tdd.controller;
 
 import com.learn.tdd.BaseApiTest;
 import com.learn.tdd.controller.request.AccountRequest;
+import com.learn.tdd.controller.request.PasswordChangeRequest;
 import com.learn.tdd.controller.request.PasswordValidateRequest;
 import com.learn.tdd.entity.Account;
 import com.learn.tdd.repository.AccountRepository;
@@ -261,5 +262,17 @@ public class AccountControllerTest extends BaseApiTest {
         given().body(request).post("/accounts/login").then().status(HttpStatus.BAD_REQUEST).body(equalTo("用户名或密码错误"));
         // when
         // then
+    }
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_update_success_when_change_password_given_valid_username_and_password_and_same_password() {
+        // given
+        PasswordChangeRequest request = new PasswordChangeRequest();
+        request.setUsername("TestUser");
+        request.setPassword("password");
+        request.setNewPassword("newPassword");
+        request.setRepeatPassword("newPassword");
+
+        given().body(request).post("/accounts/changePassword").then().status(HttpStatus.OK);
     }
 }

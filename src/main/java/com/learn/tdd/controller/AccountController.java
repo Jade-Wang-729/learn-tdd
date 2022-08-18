@@ -55,4 +55,15 @@ public class AccountController {
         }
         return ResponseEntity.badRequest().body(message);
     }
+
+    @PostMapping("/changePassword")
+
+    public ResponseEntity<String> changePassword(@RequestBody @Valid PasswordChangeRequest account) {
+        String message =  accountService.changePassword(account.getUsername(), account.getPassword(), account.getNewPassword(), account.getRepeatPassword());
+
+        if (message.equals(accountService.SUCCESS)) {
+            return ResponseEntity.ok(accountService.SUCCESS);
+        }
+        return ResponseEntity.badRequest().body(message);
+    }
 }
