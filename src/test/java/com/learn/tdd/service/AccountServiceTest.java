@@ -66,4 +66,26 @@ class AccountServiceTest extends BaseUnitTest {
         assertThat(accountService.changePassword(USERNAME, PASSWORD,NEW_PASSWORD,SAME_REPEAT_PASSWORD)).isEqualTo(accountService.SUCCESS);
 
     }
+
+    @Test
+    void should_update_password_fail_when_change_password_give_not_exist_username_and_right_password_and_two_same_password() {
+        // given
+        final Account originalAccount = new Account("TestUserWrong", PASSWORD);
+        given(accountRepository.findByUsername("TestUserWrong")).willReturn(Optional.empty());
+
+        // when
+        assertThat(accountService.changePassword("TestUserWrong", PASSWORD,NEW_PASSWORD,SAME_REPEAT_PASSWORD)).isEqualTo("用户名或密码错误");
+
+    }
+
+    @Test
+    void should_update_password_fail_when_change_password_given_exist_username_and_right_password_and_two_different_password() {
+        // given
+        final Account originalAccount = new Account(USERNAME, PASSWORD);
+        given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(originalAccount));
+
+        // when
+        assertThat(accountService.changePassword(USERNAME, PASSWORD,NEW_PASSWORD,DIFFERENT_REPEAT_PASSWORD)).isEqualTo("密码不一致");
+
+    }
 }
