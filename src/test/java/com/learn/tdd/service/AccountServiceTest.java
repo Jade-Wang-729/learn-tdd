@@ -12,12 +12,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 class AccountServiceTest extends BaseUnitTest {
     private static final String USERNAME = "TestUser";
     private static final String PASSWORD = "password001";
+    public static final String NEW_PASSWORD = "newPassword";
+    public static final String SAME_REPEAT_PASSWORD = "newPassword";
+    public static final String DIFFERENT_REPEAT_PASSWORD = "repeatPassword";
     @Mock
     private AccountRepository accountRepository;
     @InjectMocks
@@ -46,5 +50,20 @@ class AccountServiceTest extends BaseUnitTest {
 
         // when
         assertThat(accountService.login(USERNAME, "123")).isEqualTo(accountService.SUCCESS);
+    }
+
+    //update password
+    @Test
+    void should_update_password_success_when_change_password_give_exist_username_and_right_password_and_two_same_password() {
+        // given
+        final Account originalAccount = new Account(USERNAME, PASSWORD);
+        given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(originalAccount));
+
+        final Account changedAccount = new Account(USERNAME, NEW_PASSWORD);
+        given(accountRepository.save(any())).willReturn(changedAccount);
+
+        // when
+        assertThat(accountService.changePassword(USERNAME, PASSWORD,NEW_PASSWORD,SAME_REPEAT_PASSWORD)).isEqualTo(accountService.SUCCESS);
+
     }
 }

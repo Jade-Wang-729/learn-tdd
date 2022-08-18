@@ -33,4 +33,26 @@ public class AccountService {
         return SUCCESS;
     }
 
+    public String changePassword(String username, String password, String newPassword, String repeatPassword) {
+        final String loginResult = login(username, password);
+        if (!loginResult.equals(SUCCESS)) {
+            return loginResult;
+        }
+        if (!Objects.equals(newPassword, repeatPassword)) {
+            return "密码不一致";
+        }
+        if (accountRepository.findByUsername(username).isEmpty()) {
+            return "用户名或密码错误";
+        }
+        Account userChange = accountRepository.findByUsername(username).get();
+        userChange.setPassword(newPassword);
+
+        final Account saveAccount = accountRepository.save(userChange);
+        if (!saveAccount.getPassword().equals(newPassword)) {
+            return "保存失败";
+        }
+
+        return SUCCESS;
+
+    }
 }
