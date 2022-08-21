@@ -47,4 +47,26 @@ class NotificationServiceTest extends BaseUnitTest {
         assertThat(notificationService.notify("id","valid content","unread")).isEqualTo(notificationService.SUCCESS);
 
     }
+
+    @Test
+    void should_save_notification_fail_when_give_notification_given_not_exist_id_and_valid_content() {
+        // given
+
+        given(accountRepository.findById("idWrong")).willReturn(Optional.empty());
+
+        // when
+        assertThat(notificationService.notify("idWrong","valid content","unread")).isEqualTo("用户不存在");
+
+    }
+
+    @Test
+    void should_save_notification_fail_when_give_notification_given_exist_id_and_invalid_content() {
+        // given
+        final Account Account = new Account(USERNAME, PASSWORD);
+        given(accountRepository.findById(anyString())).willReturn(Optional.of(Account));
+
+        // when
+        assertThat(notificationService.notify("id"," ","unread")).isEqualTo("内容为空");
+
+    }
 }
