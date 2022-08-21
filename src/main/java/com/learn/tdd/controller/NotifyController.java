@@ -26,6 +26,15 @@ public class NotifyController {
         }
         return ResponseEntity.badRequest().body(message);
     }
+    @PostMapping("/update")
+    public ResponseEntity<String> update(@RequestBody @Valid NotificationRequest notification) {
+        String message =  notificationService.updateNotify(notification.getId(),notification.getContent(),notification.getStatus());
+
+        if (message.equals(notificationService.SUCCESS)) {
+            return ResponseEntity.ok(notificationService.SUCCESS);
+        }
+        return ResponseEntity.badRequest().body(message);
+    }
 
 
 }

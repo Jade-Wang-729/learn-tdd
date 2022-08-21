@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class NotificationControllerTest extends BaseApiTest {
 
     private static final String NOTIFY_URL = "/notify";
+    private static final String UPDATE_NOTIFY_URL = "/notify/update";
 
     //register
     @Test
@@ -40,10 +41,10 @@ public class NotificationControllerTest extends BaseApiTest {
     }
     @Test
     @Sql("classpath:sql/insertUserToDb.sql")
-    void should_notify_success_given_not_existing_id_and_valid_content() {
+    void should_notify_fail_given_not_existing_id_and_valid_content() {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setId("idd");
+        notificationRequest.setId("idWrong");
         notificationRequest.setContent("valid content");
         notificationRequest.setStatus("unread");
 
@@ -54,7 +55,7 @@ public class NotificationControllerTest extends BaseApiTest {
     }
     @Test
     @Sql("classpath:sql/insertUserToDb.sql")
-    void should_notify_success_given_existing_id_and_invalid_content() {
+    void should_notify_fail_given_existing_id_and_invalid_content() {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
 
@@ -68,4 +69,47 @@ public class NotificationControllerTest extends BaseApiTest {
 
     }
 
+    @Test
+    @Sql("classpath:sql/insertNotificationToDb.sql")
+    void should_update_success_given_existing_id_and_valid_content() {
+        // given
+        NotificationRequest notificationRequest = new NotificationRequest();
+
+        notificationRequest.setId("id");
+        notificationRequest.setContent("valid content");
+        notificationRequest.setStatus("approve");
+
+        // when
+        given().body(notificationRequest).post(UPDATE_NOTIFY_URL).then().status(HttpStatus.OK);
+
+    }
+    @Test
+    @Sql("classpath:sql/insertNotificationToDb.sql")
+    void should_update_fail_given_not_existing_id_and_valid_content() {
+        // given
+        NotificationRequest notificationRequest = new NotificationRequest();
+        notificationRequest.setId("idWrong");
+        notificationRequest.setContent("valid content");
+        notificationRequest.setStatus("approve");
+
+        // when
+        given().body(notificationRequest).post(UPDATE_NOTIFY_URL).then().status(HttpStatus.BAD_REQUEST)
+                .body(equalTo("该条通知不存在"));
+
+    }
+    @Test
+    @Sql("classpath:sql/insertNotificationToDb.sql")
+    void should_update_fail_given_existing_id_and_invalid_content() {
+        // given
+        NotificationRequest notificationRequest = new NotificationRequest();
+
+        notificationRequest.setId("id");
+        notificationRequest.setContent("invalid content");
+        notificationRequest.setStatus("approve");
+
+        // when
+        given().body(notificationRequest).post(UPDATE_NOTIFY_URL).then().status(HttpStatus.BAD_REQUEST)
+                .body(equalTo("该条通知不存在"));
+
+    }
 }
