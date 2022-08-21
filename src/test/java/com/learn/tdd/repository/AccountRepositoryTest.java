@@ -65,4 +65,5 @@ class AccountRepositoryTest extends BaseRepositoryTest {
         Optional<Account> accountChange = accountRepository.findByUsername("TestUser");
         accountChange.ifPresent(value -> assertThat(value.getPassword()).isEqualTo("newPassword"));
     }
+
 }

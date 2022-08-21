@@ -29,7 +29,8 @@ public class NotificationControllerTest extends BaseApiTest {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
 
-        notificationRequest.setId("id");
+        notificationRequest.setId("notificationId");
+        notificationRequest.setUserId("id");
         notificationRequest.setContent("valid content");
         notificationRequest.setStatus("unread");
 
@@ -37,14 +38,15 @@ public class NotificationControllerTest extends BaseApiTest {
         given().body(notificationRequest).post(NOTIFY_URL).then().status(HttpStatus.OK);
 
         // then
-        dbAssertThat("select * from notifications where id = ?", notificationRequest.getId()).hasNumberOfRows(1);
+        dbAssertThat("select * from notifications where user_id = ?", notificationRequest.getUserId()).hasNumberOfRows(1);
     }
     @Test
     @Sql("classpath:sql/insertUserToDb.sql")
     void should_notify_fail_given_not_existing_id_and_valid_content() {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setId("idWrong");
+        notificationRequest.setId("notificationId");
+        notificationRequest.setUserId("idWrong");
         notificationRequest.setContent("valid content");
         notificationRequest.setStatus("unread");
 
@@ -58,8 +60,8 @@ public class NotificationControllerTest extends BaseApiTest {
     void should_notify_fail_given_existing_id_and_invalid_content() {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
-
-        notificationRequest.setId("id");
+        notificationRequest.setId("notificationId");
+        notificationRequest.setUserId("id");
         notificationRequest.setContent(" ");
         notificationRequest.setStatus("unread");
 
@@ -74,8 +76,8 @@ public class NotificationControllerTest extends BaseApiTest {
     void should_update_success_given_existing_id_and_valid_content() {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
-
-        notificationRequest.setId("id");
+        notificationRequest.setId("notificationId");
+        notificationRequest.setUserId("id");
         notificationRequest.setContent("valid content");
         notificationRequest.setStatus("approve");
 
@@ -88,7 +90,8 @@ public class NotificationControllerTest extends BaseApiTest {
     void should_update_fail_given_not_existing_id_and_valid_content() {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setId("idWrong");
+        notificationRequest.setId("notificationId");
+        notificationRequest.setUserId("idWrong");
         notificationRequest.setContent("valid content");
         notificationRequest.setStatus("approve");
 
@@ -103,7 +106,8 @@ public class NotificationControllerTest extends BaseApiTest {
         // given
         NotificationRequest notificationRequest = new NotificationRequest();
 
-        notificationRequest.setId("id");
+        notificationRequest.setId("notificationId");
+        notificationRequest.setUserId("id");
         notificationRequest.setContent("invalid content");
         notificationRequest.setStatus("approve");
 

@@ -70,7 +70,7 @@ class NotificationServiceTest extends BaseUnitTest {
     void should_update_notification_success_when_update_given_exist_id_and_valid_content() {
         // given
         Notification notification = new Notification("id", "valid content", "unread");
-        given(notificationRepository.findByIdAndContent("id", "valid content")).willReturn(Optional.of(notification));
+        given(notificationRepository.findByUserIdAndContent("id", "valid content")).willReturn(Optional.of(notification));
 
         Notification notificationToChange = new Notification("id", "valid content", "approve");
         given(notificationRepository.save(any())).willReturn(notificationToChange);
@@ -82,8 +82,7 @@ class NotificationServiceTest extends BaseUnitTest {
     @Test
     void should_update_notification_fail_when_update_given_not_exist_id_and_valid_content() {
         // given
-        Notification notification = new Notification("idWrong", "valid content", "unread");
-        given(notificationRepository.findByIdAndContent("idWrong", "valid content")).willReturn(Optional.empty());
+        given(notificationRepository.findByUserIdAndContent("idWrong", "valid content")).willReturn(Optional.empty());
 
         // when
         assertThat(notificationService.updateNotify("idWrong","valid content","approve")).isEqualTo("该条通知不存在");
@@ -92,8 +91,7 @@ class NotificationServiceTest extends BaseUnitTest {
     @Test
     void should_update_notification_fail_when_update_given_exist_id_and_invalid_content() {
         // given
-        Notification notification = new Notification("id", "invalid content", "unread");
-        given(notificationRepository.findByIdAndContent("id", "invalid content")).willReturn(Optional.empty());
+        given(notificationRepository.findByUserIdAndContent("id", "invalid content")).willReturn(Optional.empty());
 
         // when
         assertThat(notificationService.updateNotify("id","invalid content","approve")).isEqualTo("该条通知不存在");

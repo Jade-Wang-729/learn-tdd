@@ -19,7 +19,7 @@ public class NotifyController {
 
     @PostMapping
     public ResponseEntity<String> notify(@RequestBody @Valid NotificationRequest notification) {
-        String message =  notificationService.notify(notification.getId(),notification.getContent(),notification.getStatus());
+        String message =  notificationService.notify(notification.getUserId(),notification.getContent(),notification.getStatus());
 
         if (message.equals(notificationService.SUCCESS)) {
             return ResponseEntity.ok(notificationService.SUCCESS);
@@ -28,7 +28,7 @@ public class NotifyController {
     }
     @PostMapping("/update")
     public ResponseEntity<String> update(@RequestBody @Valid NotificationRequest notification) {
-        String message =  notificationService.updateNotify(notification.getId(),notification.getContent(),notification.getStatus());
+        String message =  notificationService.updateNotify(notification.getUserId(),notification.getContent(),notification.getStatus());
 
         if (message.equals(notificationService.SUCCESS)) {
             return ResponseEntity.ok(notificationService.SUCCESS);

@@ -6,7 +6,6 @@ import com.learn.tdd.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,8 +15,8 @@ public class NotificationService {
     private final AccountRepository accountRepository;
     public final String SUCCESS = "SUCCESS";
 
-    public String notify(String id, String content, String status) {
-        if (accountRepository.findById(id).isEmpty()) {
+    public String notify(String userId, String content, String status) {
+        if (accountRepository.findById(userId).isEmpty()) {
             return "用户不存在";
         }
 
@@ -25,14 +24,14 @@ public class NotificationService {
             return "内容为空";
         }
 
-        final Notification notification = new Notification(id, content, status);
+        final Notification notification = new Notification(userId, content, status);
         notificationRepository.save(notification);
 
         return SUCCESS;
     }
 
-    public String updateNotify(String id, String content, String status) {
-        Optional<Notification> notificationToChange = notificationRepository.findByIdAndContent(id, content);
+    public String updateNotify(String userId, String content, String status) {
+        Optional<Notification> notificationToChange = notificationRepository.findByUserIdAndContent(userId, content);
         if (notificationToChange.isEmpty()) {
             return "该条通知不存在";
         }
