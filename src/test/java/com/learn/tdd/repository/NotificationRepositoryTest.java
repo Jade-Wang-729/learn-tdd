@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,5 +56,38 @@ class NotificationRepositoryTest extends BaseRepositoryTest {
         assertThat(notification.isEmpty()).isTrue();
 
     }
+
+    @Test
+    @Sql("classpath:sql/insertNotificationToDb2.sql")
+    void should_return_all_when_given_an_existing_user_id() {
+        List<Notification> notification = notificationRepository.findAllByUserId("id");
+
+        assertThat(notification.size()).isEqualTo(3);
+
+        assertThat(notification.get(0).getContent()).isEqualTo("valid content 1");
+        assertThat(notification.get(1).getContent()).isEqualTo("valid content 2");
+        assertThat(notification.get(2).getContent()).isEqualTo("valid content 3");
+
+    }
+
+    @Test
+    @Sql("classpath:sql/insertNotificationToDb.sql")
+    void should_return_one_when_given_an_existing_user_id() {
+        List<Notification> notification = notificationRepository.findAllByUserId("id");
+
+        assertThat(notification.size()).isEqualTo(1);
+
+        assertThat(notification.get(0).getContent()).isEqualTo("valid content");
+
+    }
+
+    @Test
+    void should_return_null_when_given_an_existing_user_id() {
+        List<Notification> notification = notificationRepository.findAllByUserId("id");
+
+        assertThat(notification.size()).isEqualTo(0);
+
+    }
+
 
 }

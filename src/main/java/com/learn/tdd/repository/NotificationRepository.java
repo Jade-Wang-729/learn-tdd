@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, String> {
     Optional<Notification> findByUserIdAndContent(String userId, String content);
-
+    List<Notification> findAllByUserId(String userId);
 }
