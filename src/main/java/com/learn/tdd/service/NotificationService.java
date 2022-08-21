@@ -6,7 +6,9 @@ import com.learn.tdd.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,4 +43,16 @@ public class NotificationService {
         return SUCCESS;
     }
 
+    public List searchNotify(String userId) {
+        if (accountRepository.findById(userId).isEmpty()) {
+            return List.of("用户不存在");
+        }
+        List<Notification> notification = notificationRepository.findAllByUserId("id");
+
+        if (notification.size() == 0) {
+            return List.of("没有消息");
+        }
+
+        return notification.stream().map(data -> data.getContent()).collect(Collectors.toList());
+    }
 }
