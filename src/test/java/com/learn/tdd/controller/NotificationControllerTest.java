@@ -38,5 +38,34 @@ public class NotificationControllerTest extends BaseApiTest {
         // then
         dbAssertThat("select * from notifications where id = ?", notificationRequest.getId()).hasNumberOfRows(1);
     }
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_notify_success_given_not_existing_id_and_valid_content() {
+        // given
+        NotificationRequest notificationRequest = new NotificationRequest();
+        notificationRequest.setId("idd");
+        notificationRequest.setContent("valid content");
+        notificationRequest.setStatus("unread");
+
+        // when
+        given().body(notificationRequest).post(NOTIFY_URL).then().status(HttpStatus.BAD_REQUEST)
+                .body(equalTo("用户不存在"));
+
+    }
+    @Test
+    @Sql("classpath:sql/insertUserToDb.sql")
+    void should_notify_success_given_existing_id_and_invalid_content() {
+        // given
+        NotificationRequest notificationRequest = new NotificationRequest();
+
+        notificationRequest.setId("id");
+        notificationRequest.setContent(" ");
+        notificationRequest.setStatus("unread");
+
+        // when
+        given().body(notificationRequest).post(NOTIFY_URL).then().status(HttpStatus.BAD_REQUEST)
+                .body(equalTo("内容为空"));
+
+    }
 
 }
