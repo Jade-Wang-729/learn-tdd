@@ -6,6 +6,9 @@ import com.learn.tdd.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -27,4 +30,16 @@ public class NotificationService {
 
         return SUCCESS;
     }
+
+    public String updateNotify(String id, String content, String status) {
+        Optional<Notification> notificationToChange = notificationRepository.findByIdAndContent(id, content);
+        if (notificationToChange.isEmpty()) {
+            return "该条通知不存在";
+        }
+
+        notificationToChange.get().setStatus(status);
+        notificationRepository.save(notificationToChange.get());
+        return SUCCESS;
+    }
+
 }

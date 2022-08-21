@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -20,9 +19,6 @@ import static org.mockito.BDDMockito.given;
 class NotificationServiceTest extends BaseUnitTest {
     private static final String USERNAME = "TestUser";
     private static final String PASSWORD = "password001";
-    public static final String NEW_PASSWORD = "newPassword";
-    public static final String SAME_REPEAT_PASSWORD = "newPassword";
-    public static final String DIFFERENT_REPEAT_PASSWORD = "repeatPassword";
     @Mock
     private AccountRepository accountRepository;
 
@@ -69,4 +65,39 @@ class NotificationServiceTest extends BaseUnitTest {
         assertThat(notificationService.notify("id"," ","unread")).isEqualTo("内容为空");
 
     }
+
+    @Test
+    void should_update_notification_success_when_update_given_exist_id_and_valid_content() {
+        // given
+        Notification notification = new Notification("id", "valid content", "unread");
+        given(notificationRepository.findByIdAndContent("id", "valid content")).willReturn(Optional.of(notification));
+
+        Notification notificationToChange = new Notification("id", "valid content", "approve");
+        given(notificationRepository.save(any())).willReturn(notificationToChange);
+
+        // when
+        assertThat(notificationService.updateNotify("id","valid content","approve")).isEqualTo(notificationService.SUCCESS);
+
+    }
+    @Test
+    void should_update_notification_fail_when_update_given_not_exist_id_and_valid_content() {
+        // given
+        Notification notification = new Notification("idWrong", "valid content", "unread");
+        given(notificationRepository.findByIdAndContent("idWrong", "valid content")).willReturn(Optional.empty());
+
+        // when
+        assertThat(notificationService.updateNotify("idWrong","valid content","approve")).isEqualTo("该条通知不存在");
+
+    }
+    @Test
+    void should_update_notification_fail_when_update_given_exist_id_and_invalid_content() {
+        // given
+        Notification notification = new Notification("id", "invalid content", "unread");
+        given(notificationRepository.findByIdAndContent("id", "invalid content")).willReturn(Optional.empty());
+
+        // when
+        assertThat(notificationService.updateNotify("id","invalid content","approve")).isEqualTo("该条通知不存在");
+
+    }
+
 }
