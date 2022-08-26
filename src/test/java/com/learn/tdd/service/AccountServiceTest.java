@@ -74,7 +74,8 @@ class AccountServiceTest extends BaseUnitTest {
         given(accountRepository.findByUsername("TestUserWrong")).willReturn(Optional.empty());
 
         // when
-        assertThat(accountService.changePassword("TestUserWrong", PASSWORD,NEW_PASSWORD,SAME_REPEAT_PASSWORD)).isEqualTo("用户名或密码错误");
+        assertThrows(RuntimeException.class, () ->
+                accountService.changePassword("TestUserWrong", PASSWORD,NEW_PASSWORD,SAME_REPEAT_PASSWORD), "用户名或密码错误");
 
     }
 
@@ -85,7 +86,8 @@ class AccountServiceTest extends BaseUnitTest {
         given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(originalAccount));
 
         // when
-        assertThat(accountService.changePassword(USERNAME, PASSWORD,NEW_PASSWORD,DIFFERENT_REPEAT_PASSWORD)).isEqualTo("密码不一致");
+        assertThrows(RuntimeException.class, () ->
+                accountService.changePassword(USERNAME, PASSWORD,NEW_PASSWORD,DIFFERENT_REPEAT_PASSWORD), "密码不一致");
 
     }
 }

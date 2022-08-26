@@ -43,4 +43,10 @@ public class GlobalExceptionHandler {
         }
         return errors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(", "));
     }
+
+    @ExceptionHandler(NotificationNotFindException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public String handleNoNotificationException(NotificationNotFindException exception) {
+        return exception.getMessage();
+    }
 }

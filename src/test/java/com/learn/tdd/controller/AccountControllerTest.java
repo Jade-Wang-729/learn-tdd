@@ -46,6 +46,7 @@ public class AccountControllerTest extends BaseApiTest {
         // when
         given().body(request).post(REGISTER_URL).then().status(HttpStatus.BAD_REQUEST)
                 .body(equalTo("用户名已使用"));
+
     }
 
     @Test

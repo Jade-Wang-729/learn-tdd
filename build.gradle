@@ -23,9 +23,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'mysql:mysql-connector-java:8.0.30'
+    implementation 'org.flywaydb:flyway-mysql:9.1.3'
+    implementation 'org.postgresql:postgresql'
+
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.zonky.test:embedded-database-spring-test:2.1.1'
     testImplementation 'io.zonky.test:embedded-postgres:2.0.0'
@@ -33,8 +38,8 @@ dependencies {
     testImplementation 'io.rest-assured:spring-mock-mvc'
     testImplementation 'org.assertj:assertj-db:2.0.2'
     testImplementation 'com.h2database:h2:2.1.212'
-    implementation 'mysql:mysql-connector-java:8.0.30'
-    implementation 'org.flywaydb:flyway-mysql:9.1.3'
+    testImplementation 'org.projectlombok:lombok:1.18.22'
+
 }
 
 tasks.named('test') {

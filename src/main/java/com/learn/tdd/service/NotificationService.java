@@ -1,6 +1,7 @@
 package com.learn.tdd.service;
 
 import com.learn.tdd.entity.Notification;
+import com.learn.tdd.exception.NotificationNotFindException;
 import com.learn.tdd.repository.AccountRepository;
 import com.learn.tdd.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,13 @@ public class NotificationService {
 
     public String notify(String userId, String content, String status) {
         if (accountRepository.findById(userId).isEmpty()) {
-            return "用户不存在";
+            throw new RuntimeException("用户不存在");
+
         }
 
         if (content.trim().isEmpty()) {
-            return "内容为空";
+            throw new RuntimeException("内容为空");
+
         }
 
         final Notification notification = new Notification(userId, content, status);
@@ -35,7 +38,7 @@ public class NotificationService {
     public String updateNotify(String userId, String content, String status) {
         Optional<Notification> notificationToChange = notificationRepository.findByUserIdAndContent(userId, content);
         if (notificationToChange.isEmpty()) {
-            return "该条通知不存在";
+            throw new RuntimeException("该条通知不存在");
         }
 
         notificationToChange.get().setStatus(status);
@@ -45,14 +48,15 @@ public class NotificationService {
 
     public List searchNotify(String userId) {
         if (accountRepository.findById(userId).isEmpty()) {
-            return List.of("用户不存在");
+            throw new RuntimeException("用户不存在");
+
         }
         List<Notification> notification = notificationRepository.findAllByUserId("id");
 
         if (notification.size() == 0) {
-            return List.of("没有消息");
+            throw new NotificationNotFindException("没有消息");
         }
 
-        return notification.stream().map(data -> data.getContent()).collect(Collectors.toList());
+        return notification.stream().map(Notification::getContent).collect(Collectors.toList());
     }
 }

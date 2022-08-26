@@ -7,11 +7,14 @@ import com.learn.tdd.controller.request.NotificationSearchRequest;
 import com.learn.tdd.controller.request.PasswordChangeRequest;
 import com.learn.tdd.controller.request.PasswordValidateRequest;
 import com.learn.tdd.service.PasswordValidateService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -127,7 +130,8 @@ public class NotificationControllerTest extends BaseApiTest {
         // given
         NotificationSearchRequest notificationSearchRequest = new NotificationSearchRequest();
         notificationSearchRequest.setUserId("id");
-        final String result = List.of("valid content 1", "valid content 2", "valid content 3").toString();
+//        ["valid content 1", "valid content 2", "valid content 3"];
+        String result = "{\"contentList\":[\"valid content 1\",\"valid content 2\",\"valid content 3\"]}";
         // when
         given().body(notificationSearchRequest).post(SEARCH_NOTIFY_URL).then().status(HttpStatus.OK)
                 .body(equalTo(result));
@@ -140,10 +144,16 @@ public class NotificationControllerTest extends BaseApiTest {
         // given
         NotificationSearchRequest notificationSearchRequest = new NotificationSearchRequest();
         notificationSearchRequest.setUserId("id");
-        final String result = List.of("valid content").toString();
+//        List result = new ArrayList<String>();
+//        result.add("valid content");
+//        String[] result = new String[1];
+//        result[0] = "valid content";
+        String obj = "{\"contentList\":[\"valid content\"]}";
+
+
         // when
         given().body(notificationSearchRequest).post(SEARCH_NOTIFY_URL).then().status(HttpStatus.OK)
-                .body(equalTo(result));
+                .body(equalTo(obj));
 
     }
     @Test

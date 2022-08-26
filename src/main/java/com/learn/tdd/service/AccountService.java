@@ -23,12 +23,13 @@ public class AccountService {
     public String login(String username, String password) {
 
         if (accountRepository.findByUsername(username).isEmpty()) {
-            return "用户名或密码错误";
+            throw new RuntimeException("用户名或密码错误");
+
         }
         final String passwordRepository = accountRepository.findByUsername(username).get().getPassword();
 
         if (!passwordRepository.equals(password)) {
-            return "用户名或密码错误";
+            throw new RuntimeException("用户名或密码错误");
         }
         return SUCCESS;
     }
@@ -39,18 +40,15 @@ public class AccountService {
             return loginResult;
         }
         if (!Objects.equals(newPassword, repeatPassword)) {
-            return "密码不一致";
+            throw new RuntimeException("密码不一致");
         }
         if (accountRepository.findByUsername(username).isEmpty()) {
-            return "用户名或密码错误";
+            throw new RuntimeException("用户名或密码错误");
         }
         Account userChange = accountRepository.findByUsername(username).get();
         userChange.setPassword(newPassword);
 
         accountRepository.save(userChange);
-//        if (!saveAccount.getPassword().equals(newPassword)) {
-//            return "保存失败";
-//        }
 
         return SUCCESS;
 
