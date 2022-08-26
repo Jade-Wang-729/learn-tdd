@@ -22,6 +22,26 @@ public class AccountService {
 
     public String login(String username, String password) {
 
+        authenticate(username, password);
+
+        return SUCCESS;
+    }
+
+
+    public String changePassword(String username, String password, String newPassword, String repeatPassword) {
+        if (!Objects.equals(newPassword, repeatPassword)) {
+            throw new RuntimeException("密码不一致");
+        }
+
+        final Account foundAccount = authenticate(username, password);
+
+        foundAccount.setPassword(newPassword);
+        accountRepository.save(foundAccount);
+
+        return SUCCESS;
+
+    }
+    private Account authenticate(String username, String password) {
         if (accountRepository.findByUsername(username).isEmpty()) {
             throw new RuntimeException("用户名或密码错误");
 
@@ -31,26 +51,6 @@ public class AccountService {
         if (!passwordRepository.equals(password)) {
             throw new RuntimeException("用户名或密码错误");
         }
-        return SUCCESS;
-    }
-
-    public String changePassword(String username, String password, String newPassword, String repeatPassword) {
-        final String loginResult = login(username, password);
-        if (!loginResult.equals(SUCCESS)) {
-            return loginResult;
-        }
-        if (!Objects.equals(newPassword, repeatPassword)) {
-            throw new RuntimeException("密码不一致");
-        }
-        if (accountRepository.findByUsername(username).isEmpty()) {
-            throw new RuntimeException("用户名或密码错误");
-        }
-        Account userChange = accountRepository.findByUsername(username).get();
-        userChange.setPassword(newPassword);
-
-        accountRepository.save(userChange);
-
-        return SUCCESS;
-
+        return accountRepository.findByUsername(username).get();
     }
 }

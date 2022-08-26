@@ -82,8 +82,6 @@ class AccountServiceTest extends BaseUnitTest {
     @Test
     void should_update_password_fail_when_change_password_given_exist_username_and_right_password_and_two_different_password() {
         // given
-        final Account originalAccount = new Account(USERNAME, PASSWORD);
-        given(accountRepository.findByUsername(anyString())).willReturn(Optional.of(originalAccount));
 
         // when
         assertThrows(RuntimeException.class, () ->
