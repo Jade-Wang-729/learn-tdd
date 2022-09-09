@@ -41,15 +41,12 @@ public class NotifyController {
         return ResponseEntity.badRequest().body(message);
     }
     @PostMapping("/search")
-    public ResponseEntity<Object> search(@RequestBody @Valid NotificationSearchRequest notificationSearchRequest ) {
-        List contentList = notificationService.searchNotify(notificationSearchRequest.getUserId());
+    public ResponseEntity<ContentListResponse> search(@RequestBody @Valid NotificationSearchRequest notificationSearchRequest ) {
+        List<String> contentList = notificationService.searchNotify(notificationSearchRequest.getUserId());
+        ContentListResponse contentListResponse = new ContentListResponse();
+        contentListResponse.setContentList(contentList);
 
-        if (contentList.size() > 0) {
-            ContentListResponse contentListResponse = new ContentListResponse();
-            contentListResponse.setContentList(contentList);
-            return ResponseEntity.ok().body(contentListResponse);
-        }
-        return ResponseEntity.badRequest().body(contentList);
+        return ResponseEntity.ok().body(contentListResponse);
 
     }
 
