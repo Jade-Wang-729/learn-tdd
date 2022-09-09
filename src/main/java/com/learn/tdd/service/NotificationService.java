@@ -1,7 +1,6 @@
 package com.learn.tdd.service;
 
 import com.learn.tdd.entity.Notification;
-import com.learn.tdd.exception.NotificationNotFindException;
 import com.learn.tdd.repository.AccountRepository;
 import com.learn.tdd.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,16 +45,12 @@ public class NotificationService {
         return SUCCESS;
     }
 
-    public List searchNotify(String userId) {
+    public List<String> searchNotify(String userId) {
         if (accountRepository.findById(userId).isEmpty()) {
             throw new RuntimeException("用户不存在");
 
         }
         List<Notification> notification = notificationRepository.findAllByUserId("id");
-
-        if (notification.size() == 0) {
-            throw new NotificationNotFindException("没有消息");
-        }
 
         return notification.stream().map(Notification::getContent).collect(Collectors.toList());
     }
